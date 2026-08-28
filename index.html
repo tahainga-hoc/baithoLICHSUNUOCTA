@@ -8,7 +8,7 @@
         :root {
             --primary-color: #b71c1c;
             --secondary-color: #f5f5f5;
-            --text-color: #555555;
+            --text-color: #424242;
             --highlight-color: #b71c1c;
         }
 
@@ -71,33 +71,31 @@
             outline: none;
         }
 
-        /* Khung bài thơ Karaoke */
         .poem-content {
             font-size: 1.1rem;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        /* Phong cách từng dòng thơ */
         .line {
             color: var(--text-color);
-            transition: all 0.3s ease;
-            padding: 4px 8px;
+            transition: all 0.2s ease-in-out;
+            padding: 6px 12px;
             border-radius: 6px;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
-        /* Dòng thơ đang được phát (Karaoke active) */
         .line.active {
             color: var(--highlight-color);
             font-weight: bold;
             font-size: 1.25rem;
             opacity: 1;
             background-color: #ffebee;
-            transform: scale(1.03);
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(183, 28, 28, 0.15);
         }
     </style>
 </head>
@@ -115,45 +113,57 @@
         </audio>
     </div>
 
-    <!-- Danh sách câu thơ kèm mốc thời gian (tính bằng giây) -->
     <div class="poem-content" id="poemContainer">
         <div class="line" data-time="0">Dân ta phải biết sử ta</div>
-        <div class="line" data-time="4">Cho tường gốc tích nước nhà Việt Nam.</div>
-        <div class="line" data-time="8">Kể năm hơn bốn ngàn năm</div>
-        <div class="line" data-time="12">Tổ tiên rực rỡ, anh em thuận hòa.</div>
-        <div class="line" data-time="16">Hồng Bàng là tổ nước ta</div>
-        <div class="line" data-time="20">Nước ta lúc ấy gọi là Văn Lang.</div>
-        <div class="line" data-time="24">Thiếu niên ta rất vẻ vang</div>
-        <div class="line" data-time="28">Trẻ con Phù Đổng tiếng vang muôn đời.</div>
-        <div class="line" data-time="32">Tuổi tuy chưa đến chín mười</div>
-        <div class="line" data-time="36">Ra tay cứu nước dẹp loài vô lương.</div>
-        <div class="line" data-time="40">An Dương Vương thế Hùng Vương</div>
-        <div class="line" data-time="44">Quốc danh Âu Lạc cầm quyền trị dân.</div>
-        <!-- Tiếp tục các câu thơ tiếp theo... -->
+        <div class="line" data-time="3">Cho tường gốc tích nước nhà Việt Nam.</div>
+        <div class="line" data-time="7">Kể năm hơn bốn ngàn năm</div>
+        <div class="line" data-time="11">Tổ tiên rực rỡ, anh em thuận hòa.</div>
+        <div class="line" data-time="15">Hồng Bàng là tổ nước ta</div>
+        <div class="line" data-time="19">Nước ta lúc ấy gọi là Văn Lang.</div>
+        <div class="line" data-time="23">Thiếu niên ta rất vẻ vang</div>
+        <div class="line" data-time="27">Trẻ con Phù Đổng tiếng vang muôn đời.</div>
+        <div class="line" data-time="31">Tuổi tuy chưa đến chín mười</div>
+        <div class="line" data-time="35">Ra tay cứu nước dẹp loài vô lương.</div>
+        <div class="line" data-time="39">An Dương Vương thế Hùng Vương</div>
+        <div class="line" data-time="43">Quốc danh Âu Lạc cầm quyền trị dân.</div>
+        <div class="line" data-time="47">Nước Tàu cậy thế đông người</div>
+        <div class="line" data-time="51">Kéo quân áp bức giống nòi Việt Nam.</div>
+        <div class="line" data-time="55">Quân Tàu nhiều kẻ tham lam</div>
+        <div class="line" data-time="59">Dân ta há dễ chịu làm tôi tớ.</div>
     </div>
 </div>
 
 <script>
-    const audio = document.getElementById('poemAudio');
-    const lines = document.querySelectorAll('.line');
+    document.addEventListener('DOMContentLoaded', () => {
+        const audio = document.getElementById('poemAudio');
+        const lines = Array.from(document.querySelectorAll('.line'));
 
-    audio.addEventListener('timeupdate', () => {
-        const currentTime = audio.currentTime;
-        let currentLine = null;
+        if (!audio || lines.length === 0) return;
 
-        lines.forEach((line) => {
-            const lineTime = parseFloat(line.getAttribute('data-time'));
-            if (currentTime >= lineTime) {
-                currentLine = line;
+        audio.addEventListener('timeupdate', () => {
+            const currentTime = audio.currentTime;
+            let currentActiveIndex = -1;
+
+            for (let i = 0; i < lines.length; i++) {
+                const lineTime = parseFloat(lines[i].getAttribute('data-time'));
+                if (currentTime >= lineTime) {
+                    currentActiveIndex = i;
+                } else {
+                    break;
+                }
             }
+
+            lines.forEach((line, index) => {
+                if (index === currentActiveIndex) {
+                    if (!line.classList.contains('active')) {
+                        line.classList.add('active');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('active');
+                }
+            });
         });
-
-        lines.forEach(line => line.classList.remove('active'));
-
-        if (currentLine) {
-            currentLine.classList.add('active');
-            currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
     });
 </script>
 
