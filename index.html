@@ -22,10 +22,9 @@
 
         :root {
             --primary-color: #b71c1c;
-            --secondary-color: #fafafa;
-            --text-muted: #777777;
-            --highlight-color: #b71c1c;
-            --highlight-bg: #fdeaea;
+            --text-normal: #333333;
+            --text-muted: #666666;
+            --highlight-color: #d32f2f;
             --font-family: 'Canva Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
@@ -35,7 +34,9 @@
 
         body {
             font-family: var(--font-family);
-            background-color: #f7f7f5;
+            /* Cấu hình hình nền trangbackground.png cho toàn bộ trang */
+            background: url('trangbackground.png') no-repeat center center fixed;
+            background-size: cover;
             color: #212121;
             line-height: 1.8;
             margin: 0;
@@ -51,10 +52,13 @@
             width: 100%;
             max-width: 1100px;
             height: 85vh;
-            background: #ffffff;
+            /* Lớp nền trong suốt nhẹ để hiện họa tiết trống đồng mờ phía sau */
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
             border-top: 6px solid var(--primary-color);
+            border: 1px solid rgba(183, 28, 28, 0.15);
             display: flex;
             flex-direction: row;
             overflow: hidden;
@@ -63,12 +67,12 @@
         /* CỘT BÊN TRÁI: Tiêu đề + Player âm thanh */
         .left-panel {
             flex: 0 0 380px;
-            background-color: #fafafa;
+            background-color: rgba(255, 255, 255, 0.5);
             padding: 40px 30px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border-right: 1px solid #eeeeee;
+            border-right: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         h1 {
@@ -83,21 +87,21 @@
         .author {
             text-align: center;
             font-style: italic;
-            color: #666666;
+            color: #555555;
             margin-bottom: 35px;
             font-size: 1rem;
         }
 
         .custom-player-card {
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 14px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
         }
 
         .player-title {
@@ -171,38 +175,41 @@
         }
 
         .poem-content {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             padding-bottom: 200px;
         }
 
+        /* Style mặc định của các câu thơ */
         .line {
             color: var(--text-muted);
-            padding: 12px 20px;
-            border-radius: 12px;
-            opacity: 0.4;
+            padding: 6px 10px;
+            opacity: 0.5;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: scale(0.97);
+            transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+            transform: scale(0.98);
+            background: transparent; /* Bỏ khung bar nền */
+            border-radius: 0;
+            box-shadow: none;
         }
 
         .line:hover {
             opacity: 0.85;
-            background-color: #f5f5f5;
+            color: var(--text-normal);
         }
 
-        /* Câu thơ Karaoke nổi bật */
+        /* Chỉ tô đỏ câu thơ đang phát (Karaoke gọn gàng, không bar) */
         .line.active {
             color: var(--highlight-color);
             font-weight: 700;
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             opacity: 1;
-            background-color: var(--highlight-bg);
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(183, 28, 28, 0.08);
+            transform: scale(1.05);
+            background: transparent; /* Đảm bảo không tạo khung nền */
+            box-shadow: none;
         }
 
         @media (max-width: 768px) {
@@ -217,7 +224,7 @@
                 flex: none;
                 width: 100%;
                 border-right: none;
-                border-bottom: 1px solid #eeeeee;
+                border-bottom: 1px solid rgba(0,0,0,0.08);
                 padding: 20px;
             }
             .right-panel {
@@ -251,7 +258,7 @@
         </div>
     </div>
 
-    <!-- CỘT PHẢI: BÀI THƠ VỚI MỐC THỜI GIAN ĐÃ TÍNH LẠI TỪ GIÂY THỨ 8 -->
+    <!-- CỘT PHẢI: BÀI THƠ VỚI MỐC THỜI GIAN CẬP NHẬT -->
     <div class="right-panel" id="rightPanel">
         <div class="poem-content" id="poemContainer">
             <div class="line" data-time="8">Dân ta phải biết sử ta</div>
