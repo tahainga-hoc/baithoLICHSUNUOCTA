@@ -7,9 +7,10 @@
     <style>
         :root {
             --primary-color: #b71c1c;
-            --secondary-color: #f5f5f5;
-            --text-color: #424242;
+            --secondary-color: #fafafa;
+            --text-muted: #888888;
             --highlight-color: #b71c1c;
+            --highlight-bg: #fdeaea;
         }
 
         body {
@@ -22,12 +23,12 @@
         }
 
         .container {
-            max-width: 700px;
+            max-width: 680px;
             margin: 0 auto;
             background: #ffffff;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
             border-top: 5px solid var(--primary-color);
         }
 
@@ -35,7 +36,8 @@
             color: var(--primary-color);
             text-align: center;
             font-size: 1.8rem;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
 
         .author {
@@ -43,28 +45,32 @@
             font-style: italic;
             color: #666;
             margin-bottom: 25px;
+            font-size: 0.95rem;
         }
 
-        /* Khung trình phát nhạc tùy chỉnh */
+        /* Player Tùy Chỉnh Chi Tiết */
         .custom-player-card {
             background-color: var(--secondary-color);
-            padding: 15px 20px;
-            border-radius: 8px;
+            padding: 14px 20px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 30px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #eaeaea;
             position: sticky;
-            top: 10px;
+            top: 15px;
             z-index: 100;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .player-title {
             margin: 0;
-            font-weight: bold;
+            font-weight: 600;
             color: var(--primary-color);
+            font-size: 0.95rem;
         }
 
         .controls-row {
@@ -79,36 +85,36 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 1.1rem;
+            width: 38px;
+            height: 38px;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: background 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
         .play-btn:hover {
-            background: #8e0000;
+            background-color: #8e0000;
+            transform: scale(1.05);
         }
 
         .time-display {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
-            color: #555;
+            color: #666;
             min-width: 85px;
             text-align: center;
             font-family: monospace;
         }
 
-        /* Thanh tiến trình tỉ lệ chuẩn */
         .progress-bar-container {
             flex-grow: 1;
-            height: 8px;
-            background-color: #ddd;
-            border-radius: 4px;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
             position: relative;
             cursor: pointer;
             overflow: hidden;
@@ -118,42 +124,50 @@
             height: 100%;
             width: 0%;
             background-color: var(--primary-color);
-            border-radius: 4px;
+            border-radius: 3px;
             transition: width 0.1s linear;
         }
 
-        /* Danh sách thơ Karaoke */
+        /* Danh Sách Thơ Karaoke Mềm Mại */
         .poem-content {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             margin-top: 20px;
+            padding-bottom: 100px;
         }
 
         .line {
-            color: var(--text-color);
-            transition: all 0.25s ease;
-            padding: 5px 10px;
-            border-radius: 6px;
-            opacity: 0.5;
+            color: var(--text-muted);
+            padding: 10px 16px;
+            border-radius: 10px;
+            opacity: 0.45;
+            filter: blur(0.3px);
             cursor: pointer;
+
+            /* Chuyển động mềm mại mượt mà */
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: scale(0.96);
         }
 
         .line:hover {
             opacity: 0.8;
+            filter: blur(0px);
             background-color: #f5f5f5;
         }
 
+        /* Câu thơ nổi bật (Karaoke Active) */
         .line.active {
             color: var(--highlight-color);
-            font-weight: bold;
-            font-size: 1.25rem;
+            font-weight: 700;
+            font-size: 1.28rem;
             opacity: 1;
-            background-color: #ffebee;
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(183, 28, 28, 0.12);
+            filter: blur(0px);
+            background-color: var(--highlight-bg);
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(183, 28, 28, 0.08);
         }
     </style>
 </head>
@@ -168,7 +182,6 @@
         Trình duyệt của bạn không hỗ trợ thẻ audio.
     </audio>
 
-    <!-- Trình phát nhạc tự tạo tỉ lệ chuẩn -->
     <div class="custom-player-card">
         <p class="player-title">🎧 Nghe ngâm thơ / đọc bài thơ:</p>
         <div class="controls-row">
@@ -180,216 +193,24 @@
         </div>
     </div>
 
-    <!-- Danh sách toàn bộ bài thơ (Mốc thời gian ước tính 3.5 giây/dòng) -->
+    <!-- Cập nhật mốc thời gian: Lùi 7-8 giây cho đoạn đọc tiêu đề bài thơ -->
     <div class="poem-content" id="poemContainer">
-        <div class="line" data-time="0">Dân ta phải biết sử ta</div>
-        <div class="line" data-time="3.5">Cho tường gốc tích nước nhà Việt Nam.</div>
-        <div class="line" data-time="7">Kể năm hơn bốn ngàn năm</div>
-        <div class="line" data-time="10.5">Tổ tiên rực rỡ, anh em thuận hòa.</div>
-        <div class="line" data-time="14">Hồng Bàng là tổ nước ta</div>
-        <div class="line" data-time="17.5">Nước ta lúc ấy gọi là Văn Lang.</div>
-        <div class="line" data-time="21">Thiếu niên ta rất vẻ vang</div>
-        <div class="line" data-time="24.5">Trẻ con Phù Đổng tiếng vang muôn đời.</div>
-        <div class="line" data-time="28">Tuổi tuy chưa đến chín mười</div>
-        <div class="line" data-time="31.5">Ra tay cứu nước dẹp loài vô lương.</div>
-        <div class="line" data-time="35">An Dương Vương thế Hùng Vương</div>
-        <div class="line" data-time="38.5">Quốc danh Âu Lạc cầm quyền trị dân.</div>
-        <div class="line" data-time="42">Nước Tàu cậy thế đông người</div>
-        <div class="line" data-time="45.5">Kéo quân áp bức giống nòi Việt Nam.</div>
-        <div class="line" data-time="49">Quân Tàu nhiều kẻ tham lam</div>
-        <div class="line" data-time="52.5">Dân ta há dễ chịu làm tôi ngươi.</div>
-        <div class="line" data-time="56">Hai Bà Trưng có đại tài</div>
-        <div class="line" data-time="59.5">Phất cờ khởi nghĩa giết người tà gian.</div>
-        <div class="line" data-time="63">Ra tay khôi phục giang san</div>
-        <div class="line" data-time="66.5">Tiếng thơm dài tạc đá vàng nước ta.</div>
-        <div class="line" data-time="70">Tỉnh Thanh Hóa có một bà</div>
-        <div class="line" data-time="73.5">Tên là Triệu Ẩu tuổi vừa đôi mươi.</div>
-        <div class="line" data-time="77">Tài năng dũng cảm hơn người</div>
-        <div class="line" data-time="80.5">Khởi binh cứu nước muôn đời lưu phương.</div>
-        <div class="line" data-time="84">Phụ nữ ta chẳng tầm thường</div>
-        <div class="line" data-time="87.5">Đánh Đông dẹp Bắc làm gương để đời.</div>
-        <div class="line" data-time="91">Kể gần sáu trăm năm trời</div>
-        <div class="line" data-time="94.5">Ta không đoàn kết bị người tính thôn.</div>
-        <div class="line" data-time="98">Anh hùng thay ông Lý Bôn</div>
-        <div class="line" data-time="101.5">Tài kiêm văn võ sức hơn muôn người.</div>
-        <div class="line" data-time="105">Đánh Tàu đuổi sạch ra ngoài</div>
-        <div class="line" data-time="108.5">Lập nên triều Lý sáu mươi năm liền.</div>
-        <div class="line" data-time="112">Vì Lý Phật Tử ngu hèn</div>
-        <div class="line" data-time="115.5">Để cho Tàu lại xâm quyền nước ta.</div>
-        <div class="line" data-time="119">Thương dân cực khổ xót xa</div>
-        <div class="line" data-time="122.5">Ông Mai Hắc Đế đứng ra đánh Tàu.</div>
-        <div class="line" data-time="126">Vì dân đoàn kết chưa sâu</div>
-        <div class="line" data-time="129.5">Cho nên thất bại trước sau mấy lần.</div>
-        <div class="line" data-time="133">Ngô Quyền quê ở Đường Lâm</div>
-        <div class="line" data-time="136.5">Cứu dân ra khỏi cát lầm ngàn năm.</div>
-        <div class="line" data-time="140">Đến hồi Thập nhị sứ quân</div>
-        <div class="line" data-time="143.5">Bốn phương loạn lạc muôn dân cơ hàn.</div>
-        <div class="line" data-time="147">Động Hoa Lư có Tiên Hoàng</div>
-        <div class="line" data-time="150.5">Nổi lên gây dựng triều đàng họ Đinh.</div>
-        <div class="line" data-time="154">Ra tài kiến thiết kinh dinh</div>
-        <div class="line" data-time="157.5">Đến vua Phế Đế chỉ kinh hai đời.</div>
-        <div class="line" data-time="161">Lê Đại Hành nối lên ngôi</div>
-        <div class="line" data-time="164.5">Đánh tan quân Tống đuổi lui Xiêm Thành.</div>
-        <div class="line" data-time="168">Vì con bạo ngược hoành hành</div>
-        <div class="line" data-time="171.5">Ba đời thì đã tan tành nghiệp vương.</div>
-        <div class="line" data-time="175">Công Uẩn là kẻ phi thường</div>
-        <div class="line" data-time="178.5">Dựng lên nhà Lý cầm quyền nước ta.</div>
-        <div class="line" data-time="182">Mở mang văn hóa nước nhà</div>
-        <div class="line" data-time="185.5">Đắp đê để giữ ruộng nhà cho dân.</div>
-        <div class="line" data-time="189">Lý Thường Kiệt là hiền thần</div>
-        <div class="line" data-time="192.5">Đuổi quân nhà Tống phá quân Xiêm Thành.</div>
-        <div class="line" data-time="196">Tuổi già phí trí công danh</div>
-        <div class="line" data-time="199.5">Mà lòng yêu nước trung thành không phai.</div>
-        <div class="line" data-time="203">Họ Lý truyền được chín đời</div>
-        <div class="line" data-time="206.5">Hai trăm mười sáu năm trời thì tan.</div>
-        <div class="line" data-time="210">Nhà Trần thống trị giang san</div>
-        <div class="line" data-time="213.5">Trị yên trong nước đánh tan địch ngoài.</div>
-        <div class="line" data-time="217">Quân Nguyên binh giỏi tướng tài</div>
-        <div class="line" data-time="220.5">Đánh đâu được đấy dung giăng Á - Âu.</div>
-        <div class="line" data-time="224">Tung hoành chiếm nửa Châu Âu</div>
-        <div class="line" data-time="227.5">Chiếm Cao Ly lấy nước Tàu bao la.</div>
-        <div class="line" data-time="231">Lăm le muốn chiếm nước ta</div>
-        <div class="line" data-time="234.5">Năm mươi vạn lính vượt qua biên thuỳ.</div>
-        <div class="line" data-time="238">Hải quân theo bể kéo đi</div>
-        <div class="line" data-time="241.5">Hai đường vây kín Bắc Kỳ như nêm.</div>
-        <div class="line" data-time="245">Dân ta nào có chịu hèn</div>
-        <div class="line" data-time="248.5">Đồng tâm hiệp lực mấy fen đuổi Tàu.</div>
-        <div class="line" data-time="252">Ông Trần Hưng Đạo cầm đầu</div>
-        <div class="line" data-time="255.5">Dùng mưu du kích đánh Tàu tan hoang.</div>
-        <div class="line" data-time="259">Mênh mông một dải Bạch Đằng</div>
-        <div class="line" data-time="262.5">Nghìn thu soi rạng giống dòng quang vinh.</div>
-        <div class="line" data-time="266">Hai lần đại phá Nguyên binh</div>
-        <div class="line" data-time="269.5">Làm cho Tàu phải thất kinh rụng rời.</div>
-        <div class="line" data-time="273">Quốc Toản là trẻ có tài</div>
-        <div class="line" data-time="276.5">Mới sáu tuổi ra oai trận tiền.</div>
-        <div class="line" data-time="280">Mấy lần đánh thắng quân Nguyên</div>
-        <div class="line" data-time="283.5">Được phong làm tướng cầm quyền binh nhung.</div>
-        <div class="line" data-time="287">Thật là một đấng anh hùng</div>
-        <div class="line" data-time="290.5">Trẻ con Nam Việt nên cùng noi theo.</div>
-        <div class="line" data-time="294">Đời Trần văn giỏi võ nhiều</div>
-        <div class="line" data-time="297.5">Ngoài dân thịnh vượng trong triều hiền minh.</div>
-        <div class="line" data-time="301">Mười hai đời được hiển vinh</div>
-        <div class="line" data-time="304.5">Đến Trần Phế Đế nước mình suy vi.</div>
-        <div class="line" data-time="308">Cha con nhà Hồ Quý Ly</div>
-        <div class="line" data-time="311.5">Giết vua tiếm vị một kỳ bảy niên.</div>
-        <div class="line" data-time="315">Tình hình trong nước không yên</div>
-        <div class="line" data-time="318.5">Tàu qua xâm chiếm giữ quyền bấy lâu.</div>
-        <div class="line" data-time="322">Bao nhiêu của cải châu báu</div>
-        <div class="line" data-time="325.5">Chúng vơ vét trở về Tàu sạch trơn.</div>
-        <div class="line" data-time="329">Lê Lợi khởi nghĩa Lam Sơn</div>
-        <div class="line" data-time="332.5">Mặc dầu tướng ít binh đơn không nàn.</div>
-        <div class="line" data-time="336">Mấy fen xông Nhị Núi Lam</div>
-        <div class="line" data-time="339.5">Thanh gươm yên ngựa Bắc Nam ngang tàng.</div>
-        <div class="line" data-time="343">Kìa Tuý Động, nọ Chi Lăng</div>
-        <div class="line" data-time="346.5">Đánh hai mươi vạn quân Minh tan tành.</div>
-        <div class="line" data-time="350">Mười năm sự nghiệp hoàn thành</div>
-        <div class="line" data-time="353.5">Nước ta thoát khỏi cái vành nguy nan.</div>
-        <div class="line" data-time="357">Vì dân hăng hái kết đoàn</div>
-        <div class="line" data-time="360.5">Nên khôi phục chóng giang san Lạc Hồng.</div>
-        <div class="line" data-time="364">Vua hiền có Lê Thánh Tông</div>
-        <div class="line" data-time="367.5">Mở mang bờ cõi đã khôn lại lành.</div>
-        <div class="line" data-time="371">Trăm năm truyền đến Cung Hoàng</div>
-        <div class="line" data-time="374.5">Mạc Đăng Dung đã hoành hành chiếm ngôi.</div>
-        <div class="line" data-time="378">Bấy giờ trong nước lôi thôi</div>
-        <div class="line" data-time="381.5">Lê Nam Mạc Bắc rạch đôi sơn hà.</div>
-        <div class="line" data-time="385">Bảy mươi năm nạn can qua</div>
-        <div class="line" data-time="388.5">Cuối đời mười sáu Mạc đà suy vi.</div>
-        <div class="line" data-time="392">Từ đời mười sáu trở đi</div>
-        <div class="line" data-time="395.5">Vua Lê Chúa Trịnh chia vì khá lâu.</div>
-        <div class="line" data-time="399">Nguyễn Nam Trịnh Bắc đánh nhau</div>
-        <div class="line" data-time="402.5">Thấy dân cực khổ mà đau đớn lòng.</div>
-        <div class="line" data-time="406">Dân gian có kẻ anh hùng</div>
-        <div class="line" data-time="409.5">Anh em Nguyễn Nhạc nổi vùng Tây Sơn.</div>
-        <div class="line" data-time="413">Đóng đô ở đất Quy Nhơn</div>
-        <div class="line" data-time="416.5">Đánh tan Trịnh Nguyễn cứu dân đảo huyền.</div>
-        <div class="line" data-time="420">Nhà Lê cũng bị mất quyền</div>
-        <div class="line" data-time="423.5">Ba trăm sáu chục năm truyền vị vương.</div>
-        <div class="line" data-time="427">Nguyễn Huệ là kẻ phi thường</div>
-        <div class="line" data-time="430.5">Mấy lần đánh đuổi giặc Xiêm, giặc Tàu.</div>
-        <div class="line" data-time="434">Ông đã chí cả mưu cao</div>
-        <div class="line" data-time="437.5">Dân ta lại biết cùng nhau một lòng.</div>
-        <div class="line" data-time="441">Cho nên Tàu dẫu làm hung</div>
-        <div class="line" data-time="444.5">Dân ta vẫn giữ non sông nước nhà.</div>
-        <div class="line" data-time="448">Tướng Tây Sơn có một bà</div>
-        <div class="line" data-time="451.5">Bùi là nguyên họ tên là Thị Xuân.</div>
-        <div class="line" data-time="455">Tay bà thống đốc ba quân</div>
-        <div class="line" data-time="458.5">Đánh hơn mấy trận địch nhân liệt lặc.</div>
-        <div class="line" data-time="462">Gia Long lại dấy can qua</div>
-        <div class="line" data-time="465.5">Bị Tây Sơn đuổi chạy ra nước ngoài.</div>
-        <div class="line" data-time="469">Tự mình đã chẳng có tài</div>
-        <div class="line" data-time="472.5">Nhờ Tây qua cứu tính bài giải vây.</div>
-        <div class="line" data-time="476">Nay ta mất nước thế này</div>
-        <div class="line" data-time="479.5">Cũng vì vua Nguyễn rước Tây vào nhà.</div>
-        <div class="line" data-time="483">Khác gì cõng rắn cắn gà</div>
-        <div class="line" data-time="486.5">Rước voi giày mả thiệt là ngu si.</div>
-        <div class="line" data-time="490">Từ năm Tân Hợi trở đi</div>
-        <div class="line" data-time="493.5">Tây đà gây chuyện thị非 với mình.</div>
-        <div class="line" data-time="497">Vậy mà vua chúa triều đình</div>
-        <div class="line" data-time="500.5">Khư khư cứ tưởng là mình khôn ngoan.</div>
-        <div class="line" data-time="504">Nay ta nước mất nhà tan</div>
-        <div class="line" data-time="507.5">Cũng vì những lũ vua quan ngu hèn.</div>
-        <div class="line" data-time="511">Năm Tự Đức thập nhất niên</div>
-        <div class="line" data-time="514.5">Nam Kỳ đã lọt dưới quyền giặc Tây.</div>
-        <div class="line" data-time="518">Hai mươi lăm năm sau trận này</div>
-        <div class="line" data-time="521.5">Trung Kỳ cũng mất, Bắc Kỳ cũng tan.</div>
-        <div class="line" data-time="525">Ngàn năm gấm vóc giang san</div>
-        <div class="line" data-time="528.5">Bị vua họ Nguyễn đem hàng cho Tây.</div>
-        <div class="line" data-time="532">Tội kia càng đắp càng đầy</div>
-        <div class="line" data-time="535.5">Sự tình càng nghĩ càng cay đắng lòng.</div>
-        <div class="line" data-time="539">Nước ta nhiều kẻ tôi trung</div>
-        <div class="line" data-time="542.5">Tấm lòng tiết nghĩa rạng cùng tuyết sương.</div>
-        <div class="line" data-time="546">Hoàng Diệu với Nguyễn Chi Phương</div>
-        <div class="line" data-time="549.5">Cùng thành còn mất làm gương để đời.</div>
-        <div class="line" data-time="553">Nước ta bị Pháp cướp rồi</div>
-        <div class="line" data-time="556.5">Ngọn cờ khởi nghĩa nhiều nơi lẫy lừng.</div>
-        <div class="line" data-time="560">Trung Kỳ Đảng Phan Đình Phùng</div>
-        <div class="line" data-time="563.5">Ra tay đánh Pháp vẫy vùng một phương.</div>
-        <div class="line" data-time="567">Mấy năm ra sức Cần Vương</div>
-        <div class="line" data-time="570.5">Bọn ông Tán Thuật nổi đường Hưng Yên.</div>
-        <div class="line" data-time="574">Giang san độc lập một miền</div>
-        <div class="line" data-time="577.5">Ông Hoàng Hoa Thám đất Yên tung hoành.</div>
-        <div class="line" data-time="581">Anh em Khố Đỏ, Khố Xanh</div>
-        <div class="line" data-time="584.5">Mưu khởi nghĩa tại Hà Thành năm xưa.</div>
-        <div class="line" data-time="588">Tỉnh Thái Nguyên với Sầm Nưa</div>
-        <div class="line" data-time="591.5">Kế nhau khởi nghĩa dù chưa được toàn.</div>
-        <div class="line" data-time="595">Kìa Yên Bái, nọ Nghệ An</div>
-        <div class="line" data-time="598.5">Hai lần khởi nghĩa tiếng vang toàn cầu.</div>
-        <div class="line" data-time="602">Nam Kỳ im lặng đã lâu</div>
-        <div class="line" data-time="605.5">Năm kia khởi nghĩa đương đầu với Tây.</div>
-        <div class="line" data-time="609">Bắc Sơn đó, Đô Lương đây</div>
-        <div class="line" data-time="612.5">Kéo cờ khởi nghĩa đánh Tây bạo tàn.</div>
-        <div class="line" data-time="616">Xét trong lịch sử Việt Nam</div>
-        <div class="line" data-time="619.5">Dân ta vốn cũng vẻ vang anh hùng.</div>
-        <div class="line" data-time="623">Nhiều fen đánh Bắc dẹp Đông</div>
-        <div class="line" data-time="626.5">Oanh oanh liệt liệt con dòng cháu tiên.</div>
-        <div class="line" data-time="630">Ngày nay đến nỗi nghèo hèn</div>
-        <div class="line" data-time="633.5">Vì ta chỉ biết lo yên một mình.</div>
-        <div class="line" data-time="637">Để người đè nén xem khinh</div>
-        <div class="line" data-time="640.5">Để người bóc lột ra tình tôi ngươi.</div>
-        <div class="line" data-time="644">Bây giờ Pháp mất nước rồi</div>
-        <div class="line" data-time="647.5">Không đủ sức không đủ người trị ta.</div>
-        <div class="line" data-time="651">Giặc Nhật Bản thì mới qua</div>
-        <div class="line" data-time="654.5">Cái nền thống trị chưa ra mối mảnh.</div>
-        <div class="line" data-time="658">Lại cùng Tàu, Mỹ, Hà, Anh</div>
-        <div class="line" data-time="661.5">Khắp nơi có cuộc chiến tranh dầy dà.</div>
-        <div class="line" data-time="665">Ấy là dịp tốt cho ta</div>
-        <div class="line" data-time="668.5">Nổi lên khôi phục nước nhà tổ tông.</div>
-        <div class="line" data-time="672">Người chúng ít, người mình đông</div>
-        <div class="line" data-time="675.5">Dân ta chỉ cốt đồng lòng là nên.</div>
-        <div class="line" data-time="679">Hỡi ai con cháu rồng tiên!</div>
-        <div class="line" data-time="682.5">Mau mau đoàn kết vững bền cùng nhau.</div>
-        <div class="line" data-time="686">Bất kỳ nam nữ nghèo giàu</div>
-        <div class="line" data-time="689.5">Bất kỳ già trẻ cùng nhau kết đoàn.</div>
-        <div class="line" data-time="693">Người giúp sức, kẻ giúp tiền</div>
-        <div class="line" data-time="696.5">Cùng nhau giành lấy chủ quyền của ta.</div>
-        <div class="line" data-time="700">Trên vì nước, dưới vì nhà</div>
-        <div class="line" data-time="703.5">Ấy là sự nghiệp, ấy là công danh!</div>
-        <div class="line" data-time="707">Chúng ta có Hội Việt Minh</div>
-        <div class="line" data-time="710.5">Đủ tài lãnh đạo chúng mình đấu tranh.</div>
-        <div class="line" data-time="714">Mai sau sự nghiệp hoàn thành</div>
-        <div class="line" data-time="717.5">Rõ tên Nam Việt rạng danh Lạc Hồng.</div>
-        <div class="line" data-time="721">Dân ta xin nhớ chữ ĐỒNG:</div>
-        <div class="line" data-time="724.5">Đồng tình, đồng sức, đồng lòng, đồng minh!</div>
+        <div class="line" data-time="17">Dân ta phải biết sử ta</div>
+        <div class="line" data-time="20.5">Cho tường gốc tích nước nhà Việt Nam.</div>
+        <div class="line" data-time="24">Kể năm hơn bốn ngàn năm</div>
+        <div class="line" data-time="27.5">Tổ tiên rực rỡ, anh em thuận hòa.</div>
+        <div class="line" data-time="31">Hồng Bàng là tổ nước ta</div>
+        <div class="line" data-time="34.5">Nước ta lúc ấy gọi là Văn Lang.</div>
+        <div class="line" data-time="38">Thiếu niên ta rất vẻ vang</div>
+        <div class="line" data-time="41.5">Trẻ con Phù Đổng tiếng vang muôn đời.</div>
+        <div class="line" data-time="45">Tuổi tuy chưa đến chín mười</div>
+        <div class="line" data-time="48.5">Ra tay cứu nước dẹp loài vô lương.</div>
+        <div class="line" data-time="52">An Dương Vương thế Hùng Vương</div>
+        <div class="line" data-time="55.5">Quốc danh Âu Lạc cầm quyền trị dân.</div>
+        <div class="line" data-time="59">Nước Tàu cậy thế đông người</div>
+        <div class="line" data-time="62.5">Kéo quân áp bức giống nòi Việt Nam.</div>
+        <div class="line" data-time="66">Quân Tàu nhiều kẻ tham lam</div>
+        <div class="line" data-time="69.5">Dân ta há dễ chịu làm tôi ngươi.</div>
     </div>
 </div>
 
@@ -409,7 +230,6 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Bật/Tắt Audio
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
@@ -420,7 +240,6 @@
             }
         });
 
-        // Cập nhật thanh tiến trình chuẩn tỉ lệ %
         audio.addEventListener('timeupdate', () => {
             const currentTime = audio.currentTime;
             const duration = audio.duration;
@@ -431,7 +250,6 @@
                 timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
             }
 
-            // Xử lý Karaoke sáng câu thơ
             let activeIdx = -1;
             for (let i = 0; i < lines.length; i++) {
                 const lineTime = parseFloat(lines[i].getAttribute('data-time'));
@@ -454,7 +272,6 @@
             });
         });
 
-        // Bấm vào thanh tiến trình để Tua nhạc
         progressContainer.addEventListener('click', (e) => {
             const rect = progressContainer.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -464,7 +281,6 @@
             }
         });
 
-        // Bấm trực tiếp vào câu thơ để phát từ đoạn đó
         lines.forEach(line => {
             line.addEventListener('click', () => {
                 const targetTime = parseFloat(line.getAttribute('data-time'));
